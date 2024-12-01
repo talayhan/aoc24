@@ -1,3 +1,12 @@
+/*
+ * Time complexity: O(n log n)
+ * Space complexity: O(n)
+ *
+ * Algorithms and Data Structures Used:
+ * --------
+ * Sorting (using sort)
+ * Vector (for storing the lists)
+ */
 #include <bits/stdc++.h>
 
 using namespace std;
