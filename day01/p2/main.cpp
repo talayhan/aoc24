@@ -75,8 +75,12 @@ int main()
         r_list.pb(num_r);
     }
 
-    for (int i = 0; i < l_list.size(); i++) {
-        similarity_score += l_list[i] * count(r_list.begin(), r_list.end(), l_list[i]);
+    unordered_map<int, int> freq_map;
+    for (int num_r : r_list) {
+        freq_map[num_r]++;
+    }
+    for (int num_l : l_list) {
+        similarity_score += num_l * freq_map[num_l];
     }
 
     std::cout << "The similarity score of this lists: " << similarity_score << std::endl;
