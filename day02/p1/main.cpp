@@ -1,3 +1,9 @@
+/*
+ * Time complexity: O(n * m)
+ * Space complexity: O(1)
+ *
+ *Algorithms and Data Structures Used: File I/O, String Parsing, Enumeration
+ */
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -57,16 +63,20 @@ int main()
 {
     ios_base::sync_with_stdio(false); cin.tie(NULL);
     ifstream file("../" INPUT_FILE);
+    //ifstream file("../" INPUT_SAMPLE_FILE);
 
+    int index = 1;
     string line;
     int num_of_safe_rep = 0;
     while (getline(file, line)) {
         std::istringstream iss(line);
 
+        std::cout << "[" << index++ << "]-----------------" << std::endl;
         // Read integers from each line
         int num;
         int prev_num = -1;
-        bool keeping_velocity = false;
+        bool keeping_velocity = true;
+        bool use_one_luck = false;
         enum e_level_velocity {
             LEVEL_INCREASING,
             LEVEL_DECREASING,
@@ -89,8 +99,13 @@ int main()
                 } else if (vel == LEVEL_DECREASING) {
                     keeping_velocity = true;
                 } else {
-                    keeping_velocity = false;
-                    break;
+                    if (use_one_luck == false) {
+                        use_one_luck = true;
+                        continue;
+                    } else {
+                        keeping_velocity = false;
+                        break;
+                    }
                 }
             } else { // increasing
                 if (vel == LEVEL_UNKNOWN) {
@@ -98,8 +113,13 @@ int main()
                 } else if (vel == LEVEL_INCREASING) {
                     keeping_velocity = true;
                 } else {
-                    keeping_velocity = false;
-                    break;
+                    if (use_one_luck == false) {
+                        use_one_luck = true;
+                        continue;
+                    } else {
+                        keeping_velocity = false;
+                        break;
+                    }
                 }
             }
 
@@ -107,16 +127,23 @@ int main()
             std::cout << " prev_num: " << prev_num;
             std::cout << " vel: " << vel;
             std::cout << " keeping_velocity: " << keeping_velocity;
+            std::cout << " use_one_luck: " << use_one_luck;
             std::cout << " diff: " << diff << std::endl;
             if (diff > 3 || diff < 1) {
-                keeping_velocity = false;
-                break;
+                if (use_one_luck == false) {
+                    use_one_luck = true;
+                    continue;
+                } else {
+                    keeping_velocity = false;
+                    break;
+                }
             }
             prev_num = num;
         }
         if (keeping_velocity == true) {
             num_of_safe_rep++;
         }
+        std::cout << " safe rep: " << num_of_safe_rep;
         std::cout << std::endl;
     }
 
