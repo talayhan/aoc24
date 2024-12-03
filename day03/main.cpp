@@ -51,6 +51,30 @@ typedef unsigned long long int  uint64;
 #define INPUT_SAMPLE_FILE "input_sample.txt"
 
 /* clang-format on */
+bool add = true;
+
+std::vector<std::pair<int, int>> findDoMulPatterns(const std::string& str) {
+    std::regex pattern(R"(do\(\)|don't\(\)|.?mul\((\d{1,3}),(\d{1,3})\))");
+    std::vector<std::pair<int, int>> matches;
+
+    auto words_begin = std::sregex_iterator(str.begin(), str.end(), pattern);
+    auto words_end = std::sregex_iterator();
+
+    for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
+        std::smatch match = *i;
+        if (match.str().find("don't") == 0) {
+            add = false;
+        } else if (match.str().find("do") == 0) {
+            add = true;
+        } else {
+            if (add) {
+                matches.emplace_back(std::stoi(match[1].str()), std::stoi(match[2].str()));
+            }
+        }
+    }
+
+    return matches;
+}
 
 std::vector<std::pair<int, int>> findMulPatterns(const std::string& str) {
     std::regex pattern(R"(.?mul\((\d{1,3}),(\d{1,3})\))");
@@ -74,20 +98,36 @@ int main()
     ifstream file("../" INPUT_FILE);
 
     string line;
-    vector<pii> xy;
+    vector<vector<pii>> vec_xy_p1;
+    vector<vector<pii>> vec_xy_p2;
     ll result = 0;
     int i = 0;
+
     while (getline(file, line)) {
-        xy = findMulPatterns(line);
-        for (auto elem : xy) {
+        vec_xy_p1.emplace_back(findMulPatterns(line));
+        vec_xy_p2.emplace_back(findDoMulPatterns(line));
+    }
+
+    // part 1
+    for (auto vec : vec_xy_p1) {
+        for (auto elem : vec) {
             auto x = elem.first;
             auto y = elem.second;
-            std::cout << "[" << i++ << "] x: " << x << " y: " << y << std::endl;
             result += (x*y);
         }
     }
+    std::cout << "P1 - All of the multiplications: " << result << std::endl;
 
-    std::cout << "All of the multiplications: " << result << std::endl;
+    // part 2
+    result = 0;
+    for (auto vec : vec_xy_p2) {
+        for (auto elem : vec) {
+            auto x = elem.first;
+            auto y = elem.second;
+            result += (x*y);
+        }
+    }
+    std::cout << "P2 - All of the multiplications: " << result << std::endl;
 
     file.close();
     return 0;
